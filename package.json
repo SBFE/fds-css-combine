@@ -1,6 +1,6 @@
 {
   "name": "fds-css-combine",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "combine css by @import for fd-server",
   "main": "fds-css-combine.node",
   "scripts": {
