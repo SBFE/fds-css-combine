@@ -1,0 +1,25 @@
+{
+  "name": "fds-css-combine",
+  "version": "0.0.1",
+  "description": "combine css by @import for fd-server",
+  "main": "fds-css-combine.node",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Esoul/fds-css-combine.git"
+  },
+  "keywords": [
+    "fd-server"
+  ],
+  "author": "Tony Liang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Esoul/fds-css-combine/issues"
+  },
+  "dependencies": {
+    "clean-css":"~2.1.8"
+  },
+  "homepage": "https://github.com/Esoul/fds-css-combine"
+}
