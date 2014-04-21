@@ -1,0 +1,69 @@
+var CleanCSS = addModule('clean-css');
+var u = require('url');
+var fs = require('fs');
+var path = require('path');
+var qs = require('querystring');
+var domain = require('domain');
+
+route(function(req,res){
+	var url;
+	var query;
+	var file;
+	var output = [];
+
+	try{
+		output.push('url: ' + req.url);
+		url = u.parse(req.url);
+
+		output.push('query: ' + url.query);
+		query = qs.parse(url.query);
+
+		file = decodeURIComponent(query.file) + '.css';
+		output.push('file: ' + file);
+
+		file = path.resolve(__dirname,file);
+		output.push('local:' + file);
+
+		logger.info('css pack: ' + file);
+	}catch(e){
+		res.writeHeader(404,'text/html');
+		output.push('error!');
+		output.push(e.toString());
+		res.end(output.join('\n'));
+		logger.info(e.toString());
+	}
+
+	if(fs.existsSync(file)){
+		var pwd = path.dirname(file);
+		output.push('pwd: ' + pwd);
+
+		var source = fs.readFileSync(file);
+		var minifier = new CleanCSS({
+			debug : true,
+			processImport : true,
+			keepBreaks : true,
+			relativeTo : pwd
+		});
+
+		var minimized = minifier.minify(source);
+		output.push('time taken: ' + minifier.stats.timeSpent + ' ms');
+		output.push('original size: ' + minifier.stats.originalSize + ' bytes');
+		output.push('minified size: ' + minifier.stats.minifiedSize + ' bytes');
+		output.push('efficiency: ' + (minifier.stats.efficiency * 100).toString().substr(0,4) + ' %' );
+
+		output.unshift('/*');
+		output.push('*/');
+		output.push(minimized);
+
+		res.writeHeader(200,{
+			'content-type':'text/css'
+		});
+		res.end(output.join('\n'));
+	}else{
+		res.writeHeader(404,'text/html');
+		output.push('404');
+		res.end(output.join('\n'));
+	}
+
+});
+
